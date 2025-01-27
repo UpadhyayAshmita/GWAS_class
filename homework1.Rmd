@@ -1,0 +1,146 @@
+---
+title: "Homework1"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+1.  In R, use the "set.seed" function to set the random seed to "8875",
+    then get 10 random numbers from an exponential distribution. What
+    are the mean and median of these numbers? • Note: The values you get
+    will only match the ones I'm expecting the first time you do a
+    random draw after setting the seed, so if you have to redo the draw
+    be sure to set the seed again, otherwise your answer will be
+    incorrect.
+
+Ans: The mean and median of the random 10 number drawn from the
+exponential distribution is 0.88 and 0.85 respectively.
+
+```{r}
+set.seed(8875)
+random_num<- rexp(10)
+mean_exp<- mean(random_num)
+median_exp<- median(random_num)
+```
+
+2.With the following matrices:
+
+```{r}
+A<- matrix(c(14,2,-6,0,-11,5), nrow = 3)
+B<- matrix(c(-5,6,21,0,-3,1),nrow = 2)
+AB= A%*%B
+BA= B%*%A
+```
+
+3.  You are doing a linear regression to look at the effect of different
+    light qualities on different varieties of clover. Growth rate is
+    your dependent variable, and your two independent variables are
+    clover variety (4 types) and light quality (3 types) , both of which
+    are categorical variables. You have 60 observations total, so what
+    will be the dimensions of your design matrix? • Note: For those with
+    prior regression experience, we are not looking at any interactions
+    here, just main effects.
+
+Ans: Since we have 60 observation means the number of rows will be 60
+and the two categorical variables clover variety has 4 types and light
+quality has 3 types we end up having 3 and 2 factor level so at the end
+the design matrix X will have the dimension of 60 * 6( intercept ,
+clover variety(4-1), light quality(3-1)).
+
+4.  You have the following data table looking at apple fruit set with
+    different amounts of inputs: Solve the linear regression for this
+    data using matrix algebra (like we did in class), treating Nitrogen,
+    Phosphorus, and Water as quantitative variables (not factors). Show
+    the following results: 
+    • (X^TX)-1 \\
+    • beta  \\
+    • error \\
+    
+```{r}
+#creating dataframe in R from the image 
+fruit_data<- data.frame(fruitset= c(4,5.5,3,6.7,5.3,6.2),nitrogen=c(5,5,5,15,15,15), phosphorus=c(10,20,10,20,10,20),water=c(30,30,60,60,100,100))
+#creating matrix for Y and X 
+Y<- matrix(c(4,5.5,3,6.7,5.3,6.2),nrow = 6)
+X<- matrix(c(1,1,1,1,1,1,5,5,5,15,15,15,10,20,10,20,10,20,30,30,60,60,100,100 ),nrow = 6)
+
+#computing (X^TX)-1
+Xtran<- t(X)
+XtransX <-Xtran%*%X
+a<- solve(XtransX) #ans for (X^TX)-1
+
+#computing beta i.e coefficint from the equation first we will calculate X^trans * Y
+XtransY<- Xtran %*% Y
+beta<- a %*% XtransY
+
+#calculating error
+e<- Y- X%*%beta
+sum(e^2) #0.42
+
+```
+
+5.	Repeat the above, but this time only include a single independent variable at a time. (That is, solve 3 models: one with Nitrogen, one with Phosphorus, and one with Water.) Which of these three models best explains the data? How do you know?
+•	Note: you do not have to write down , or the like, just which is the best model and why.
+
+Ans: Among the three model using each explanatory variable only at a time, the model using phosphorus as an explanatory variable best explain the data as it has lower sums of squared error meaning that the predicted value of the response i.e., fruit set by the model and actual fruit set recorded is close and thus the error/residual which is also known as unexplained variability is minimum when we fit the phosphorus model. 
+
+```{r}
+#model with nitrogen only
+#creating matrix for Y and X 
+Y<- matrix(c(4,5.5,3,6.7,5.3,6.2),nrow = 6)
+X<- matrix(c(1,1,1,1,1,1,5,5,5,15,15,15 ),nrow = 6)
+#computing (X^TX)-1
+Xtran<- t(X)
+XtransX <-Xtran%*%X
+a<- solve(XtransX) #ans for (X^TX)-1
+
+#computing beta i.e coefficint from the equation first we will calculate X^trans * Y
+XtransY<- Xtran %*% Y
+beta<- a %*% XtransY
+
+#calculating error
+e<- Y- X%*%beta
+sum(e^2) #4.17
+
+#using phosphorus only as an explanatory variable
+#creating matrix for Y and X 
+Y<- matrix(c(4,5.5,3,6.7,5.3,6.2),nrow = 6)
+X<- matrix(c(1,1,1,1,1,1,10,20,10,20,10,20),nrow = 6)
+#computing (X^TX)-1
+Xtran<- t(X)
+XtransX <-Xtran%*%X
+a<- solve(XtransX) #ans for (X^TX)-1
+
+#computing beta i.e coefficint from the equation first we will calculate X^trans * Y
+XtransY<- Xtran %*% Y
+beta<- a %*% XtransY
+
+#calculating error
+e<- Y- X%*%beta
+sum(e^2) #3.386
+
+#model using only water as an explanatory variable
+#creating matrix for Y and X 
+Y<- matrix(c(4,5.5,3,6.7,5.3,6.2),nrow = 6)
+X<- matrix(c(1,1,1,1,1,1,30,30,60,60,100,100),nrow = 6)
+#computing (X^TX)-1
+Xtran<- t(X)
+XtransX <-Xtran%*%X
+a<- solve(XtransX) #ans for (X^TX)-1
+
+#computing beta i.e coefficint from the equation first we will calculate X^trans * Y
+XtransY<- Xtran %*% Y
+beta<- a %*% XtransY
+
+#calculating error
+e<- Y- X%*%beta
+sum(e^2) #8.5179
+
+
+```
+
+
