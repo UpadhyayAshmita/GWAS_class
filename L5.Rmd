@@ -1,0 +1,75 @@
+---
+title: "L5"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+```{r}
+library(dplyr)
+mydata<- read.csv("05_review1.csv") %>%  mutate(Management= as.factor(Management),
+                                                Varieties= as.factor(Varieties))
+mymodel<- lm(Harvest ~ Management + Varieties, data=mydata)
+summary(mymodel)
+```
+
+
+```{r}
+data<- read.csv("05_height.csv")
+model1<- lm(height ~ m1, data= data)
+summary(model1)
+
+model2<- lm(height ~ m2, data= data)
+summary(model2)
+
+model3<- lm(height ~ m3, data= data)
+summary(model3)
+
+model4<- lm(height ~ m4, data= data)
+summary(model4)
+
+
+
+```
+
+
+```{r}
+mydata<- read.csv("05_berries.csv")
+model<- lm(berries ~ m1 +m2+m3+m4+m5+m6+m7+m8, data=mydata) # dont do all marker at a same time
+summary(model)
+
+model1<- lm(height ~ m1, data= data)
+summary(model1)
+
+model2<- lm(height ~ m2, data= data)
+summary(model2)
+
+model3<- lm(height ~ m3, data= data)
+summary(model3)
+
+model4<- lm(height ~ m4, data= data)
+summary(model4)
+
+```
+```{r}
+library(rrBLUP)
+geno<- read.csv("05_stand_genos.csv", check.names = FALSE)
+pheno<- read.csv("05_stand_phenos.csv")
+
+GWAS(pheno, geno, plot=TRUE)
+
+```
+

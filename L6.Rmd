@@ -1,0 +1,66 @@
+---
+title: "L6"
+output: html_notebook
+---
+
+```{r}
+#cotton
+
+function(test_reg){lm(y_var)}
+cotton<- read.csv("06_cotton.csv")
+m1<- lm(lint ~ m1, data= cotton)
+summary(m1)
+m2<- lm(lint ~ m2, data= cotton)
+summary(m2)
+m3<- lm(lint ~ m3, data= cotton)
+summary(m3)
+m4<- lm(lint ~ m4, data= cotton)
+summary(m4)
+m5<- lm(lint ~ m5, data= cotton)
+summary(m5)
+m6<- lm(lint ~ m6, data= cotton)
+summary(m6)
+m7<- lm(lint ~ m7, data= cotton)
+summary(m7)
+#p1= sumamry(mymodel)$coefficients[2,4] # pulling out r value programmatically 
+p<- c(0.6, 0.96, 1.062e-10, 2.02e-05, 0.004,0.0002, 0.285)
+plot(-log(p))
+```
+
+
+
+```{r}
+library(dplyr)
+missing<- read.csv("06_missing1.csv", row.names = 1)
+sum(is.na(missing))
+is_missing<- is.na(missing)
+missing_count<- rowSums(is_missing)
+hist(missing_count)
+
+#filter
+filtered= subset(missing, missing_count< 100)
+is_missing<- is.na(filtered)
+missing_count<- rowSums(is_missing)
+hist(missing_count)
+
+
+
+
+```
+
+
+
+
+```{r}
+maize<- read.delim("06_maize_freqs.txt")
+hist(maize$Minor.Allele.Frequency)
+filtered= subset(maize, maize$Minor.Allele.Frequency>= 0.05)
+hist(filtered$Minor.Allele.Frequency,breaks = 20)
+```
+
+
+
+```{r}
+
+```
+

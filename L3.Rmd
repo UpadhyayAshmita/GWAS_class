@@ -1,0 +1,48 @@
+---
+title: "L3"
+output: html_notebook
+---
+```{r}
+Y<- matrix(c(4.3,4.9,5.9,7.5,4.0,7.5,7.7,6.3))
+X<- matrix(c(1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1),nrow = 8)
+
+
+
+#sums of squares
+ss_model<- sum(Yhat -mean(Y))^2
+ss_error<- sum(error^2)
+
+#mean square
+ms_model= ss_model/ 4
+ms_error=  ss_model/3
+
+#F and p
+F= ms_model/ ms_error
+F
+pf(F,df1=4, df2=3,lower.tail = FALSE)
+```
+
+```{r}
+
+mod1<- pf(2.1, 2,3,lower.tail = FALSE) #0.26
+mod2<- pf(1.2, 4,3,lower.tail = FALSE) #0.45
+```
+
+```{r}
+Y<- matrix(c(4.3,5.2, 3.1,6.7, 8.1,6.2))
+X<- matrix(c(1,1,1,1,1,1, 1,0,0,1,0,0,0,1,0,0,1,0,1,1,1,0,0,0),nrow = 6)
+#computing (X^TX)-1
+Xtran<- t(X)
+XtransX <-Xtran%*%X
+a<- solve(XtransX) #ans for (X^TX)-1
+
+#computing beta i.e coefficint from the equation first we will calculate X^trans * Y
+XtransY<- Xtran %*% Y
+beta<- a %*% XtransY
+
+#calculating error
+e<- Y- X%*%beta
+sum(e^2) #0.13
+
+```
+
