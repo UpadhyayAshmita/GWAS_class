@@ -1,0 +1,53 @@
+---
+title: "L8"
+output: html_notebook
+---
+
+```{r}
+mildew<- read.csv("08_mildew.csv")
+hist(mildew$mildew_score)
+plot(mildew$mildew_score)
+
+filtered= subset(mildew, mildew_score >0)
+plot(filtered$mildew_score)
+
+```
+```{r}
+example<- read.csv("08_example1.csv")
+mydist= dist(example)
+cmdscale(mydist, k=3, eig=TRUE)
+plot(pca[,1], pca[,2])
+
+maize<- read.csv("08_maize_chr8.csv", row.names = 1)
+mydist= dist(maize)
+pca= cmdscale(mydist, k=3)
+plot(pca[,1],pca[,2])
+```
+
+
+```{r}
+rice_snp<- read.delim("09_rice_snps.txt",row.names=1)
+mydist=dist(rice_snp)
+pca=cmdscale(mydist, k=20)
+plot(pca[,1],pca[,2])
+cmdscale(mydist,k=2,eig=TRUE)
+plot(pca[,1], pca[,2])
+pcs=cmdscale(mydist, eig=T)
+plot(pcs$eig[1:20],col="blue")
+
+#get variance explained
+plot(pcs$eig[1:20] / sum(pcs$eig))
+percents=(pcs$eig[1:20] / sum(pcs$eig))
+cumsum(percents)
+```
+
+
+```{r}
+library(readr)
+rice<- read_delim("09_rice_site_data.txt",delim = "\t",show_col_types = FALSE)
+hist(rice$ref_freq, breaks = 20)
+#minor allel
+
+rice$maf = ifelse(rice$ref_seq< 0.5, rice$ref_seq, 1-rice$ref_freq)
+```
+

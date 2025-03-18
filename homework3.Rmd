@@ -1,0 +1,200 @@
+---
+title: "Homework3"
+output:
+  pdf_document: default
+  html_document: default
+  html_notebook: default
+---
+1.	Load the data in “hw3_disease.csv” and run an association with the 10 markers in it. Include here the p-values for association for each of the markers with disease score, and plot them in a Manhattan plot.
+
+```{r,echo = TRUE,warning=FALSE}
+
+disease<- read.csv("hw3_disease.csv")
+m1<- lm(disease ~ m1, data = disease)
+summary(m1) # -0.484
+
+m2<- lm(disease ~ m2, data = disease)
+summary(m2)   # 0.04564
+
+m3<- lm(disease ~ m3, data = disease)
+summary(m3)   # 0.0005832
+
+m4<- lm(disease ~ m4, data = disease)
+summary(m4)   # 0.2039
+
+m5<- lm(disease ~ m5, data = disease)
+summary(m5)   # 6.424e-05
+
+m6<- lm(disease ~ m6, data = disease)
+summary(m6)   # 0.05606
+
+m7<- lm(disease ~m7, data = disease)
+summary(m7)   # 0.9247
+
+m8<- lm(disease ~m8, data = disease)
+summary(m8)   # 1.142e-08
+
+m9<- lm(disease ~m9, data = disease)
+summary(m9)   # 0.7798
+
+m10<- lm(disease ~m10, data = disease)
+summary(m10)   # 0.9409
+
+pvalues<- c(-0.484, 0.04, 0.0005,0.2039, 6.424e-05, 0.05606,0.92,1.142e-08, 0.77,0.9409)
+
+plot(-log(pvalues))
+
+
+```
+
+
+2.	Given the following column of genotypes, make the corresponding design matrix (X) under the additive model, the additive + dominant model, and the genotype model. (Remember the intercept.) Why would you choose one over the others?
+
+AG
+GG
+AA
+AG
+GG
+AA
+AG
+
+Ans: Choosing the three different model depends on our goal of research or GWAS analysis i.e if we are working with hybrid crop like maize where heterogygosity is found and dominant effect could be present that might have genetic affect on the trait of interest then additive + dominant model will be better but if we are working with the inbred crop then only additive model will be sufficient and if we are not interested on any additive dominance effect that could affect the trait of interest then opting out for genotype model is good. 
+```{r,echo=TRUE, include= TRUE}
+#additive design x matrix
+additiveX<- matrix(c(1,1,1,1,1,1,1,1,2,0,1,2,0,1), nrow = 7)
+additiveX
+#additive + dominant design x matrix
+add_domX<- matrix(c(1,1,1,1,1,1,1,1,2,0,1,2,0,1,1,0,0,1,0,0,1),nrow = 7)
+add_domX
+#genotype design matrix
+genoX<- matrix(c(1,1,1,1,1,1,1,1,0,0,1,0,0,1,0,1,0,0,1,0,0), nrow = 7)
+genoX
+
+```
+3.	You have two populations of soybeans you are doing GWAS on. One is elite US breeding material, while the other is a mix of traditional Chinese landraces and wild soybean ancestors. Which population will require more genetic markers to saturate the map for GWAS? Why?
+
+Ans: The second one that has mix of chinese landraces and wild soybean ancestors will require more genetic markers to saturate the map for GWAS as there will be more recombnation as they are genetically very diverse and has very low LD so we would need more markers to saturate the map for GWAS however in case of elite lines they are genetically more related and also has very less recombination and high LD so few markers will be enough to saturate the map. 
+
+
+4.	Consider two markers to be used in a GWAS across 600 varieties of rice:
+	Marker 1	Marker 2
+% AA	87.8%	16.3%
+% AC	2.2%	17.5%
+% CC	0.3%	15.3%
+% Missing	9.7%	50.8%
+
+Under the Additive model, which marker will have more power to identify a significant difference between genotypes? Why?
+
+![MAF calculation](MAF.jpg)
+
+
+Ans: The marker 1 has more power in terms of the less missing data i.e we have more power here but for marker 2 we have high missing data so it decreases the power of finding the significant association as we have less replication of our alleles. 
+However, if a breeder calculate the MAF of marker 1 an 2 then the MAF of marker 2 is higher i.e 49 % however the MAF of marker 1 i.e c allele is  0.015 i.e 1.5% so the chances of finding the significant association when the MAF is this low in marker1 becomes challenging so in this case marker 2 has more power to identify the significance.The MAF of marker 2 is 0.49 or 49 % so there are more rice line with the minor allele, resulting more power in detecting statistical significant association.
+Lets say even if we set the threshold of 20 individual as a thumb rule, then we have 600 varieties of rice means we have 1200 total allele(rice is diploid), so MAF of 0.015 gives us 18 out of 1200 allele is minor allele in our data. so, this rules out the marker1 potential. Neither of them has best power but marker2 has more power compared to marker1. 
+
+
+5.	Load the phenotype data in “hw3_field.csv”
+•	Plot both the raw data (in plot order) and a histogram of the data.
+•	Are there any problems with the data? Why or why not? If there are problems, which linear regression assumptions does this data likely violate?
+
+Ans: The data below probably violate the normality assumption as the histogram doesn't seems to have bell shaped curve and rather its left skewed and also the homogeneity of the variance is also violated as it is giving us some elbow like shape in the 200th plot number and the observation from one plot to another seems to be correlated too.   
+
+
+```{r,echo=TRUE,include=TRUE}
+field<- read.csv("hw3_field.csv")
+plot(field$FloweringTime)
+hist(field$FloweringTime)
+```
+
+
+6.	Load the (numerical) genotype data in “hw3_millet.csv” and perform a principal coordinates analysis on it. (Hint: Remember to exclude the sample labels from your calculation.)
+•	Plot the first two principal coordinates.
+•	Does this population appear to have strong structure? Why or why not?
+•	Plot the scree plot to show how much variance the first 20 PCs explain. If you had to choose a number of PCs to include in your GWAS model, how many would you choose? Why?<br>
+Ans: Yes the population seems to have strong structure because the bi-plot here is showing us three cluster  of the samples and they seems to be strongly correlated.<br>
+
+If I had to choose the number of PCs then I would have choosen first 5 because the first two pcs have big gap and difference in variance explained and also there is some distance after the second and there is an elbow which then flattens after 5th PCs so I would choose the PCs that are before the elbow as they explain the most of the variance of my data. 
+
+
+```{r,echo=TRUE,include=TRUE,warning=FALSE}
+
+millet<- read.csv("hw3_millet.csv", row.names = 1)
+mydist= dist(millet)
+pca= cmdscale(mydist, k=2)
+#plotting the biplot 
+plot(pca[, 1],pca[, 2], cex=1.5)
+#getting the eigen value
+pcs=cmdscale(mydist, eig=T)
+#plotting the screeplot
+plot(pcs$eig,col="blue")
+eignorm<- pcs$eig/sum(pcs$eig)
+plot(eignorm[1:20], color="red")
+```
+
+
+
+7.	Using the same methods we did in class, run a GWAS on the Maize Ames data for the “flowering” phenotype. Generate plots for each step of the analysis, specifically:
+•	The distribution of the raw data. (You don’t have to filter any out, but do indicate if there are any data points you might be concerned about.) <br>
+Ans: The distribution of raw data is left skewed and looks non-normal but when the observation above 2500 is filtered the distribution looks more normal so those can be considered outliers in the data. <br> 
+•	The Principal Coordinate and Scree plots, including how many PCs you want to include <br>
+Ans: The elbow of the scree plots shows that the first 8 PCs explain the variance and after that the curve is flat so first 8 can be included. <br>
+
+•	Manhattan  and QQ plots using (1) just Kinship and (2) Kinship+ PCs 
+i.	Which method do you think gives the better results? Why? <br>
+Ans: The kinship+ pcs method gives better result. If we compare the qq plot which is also the measure to assess the quality of GWAS outcome then we can see the plot of pcs+ kinship is better than kinship alone.The jump is not diagonal and then the expected vs actual pvalue is aligned more in pcs+kinship result. Also, we see the population structure is prominent so including pcs in model will definitely give better result as expected. <br>
+ii.	How do these results compare to the “color” phenotype we did together in class? What does that mean for the biology of the two traits?<br>
+Ans: The result we have here shows that there are many significant SNPs associated with the flowering time and flowering being a quantitative trait explains the result with many snps being significant while the color being qualitative trait, we got few number of marker associated with that phenotype. Thus, the biology is that the more complex the trait is running GWAS and setting threshold and selecting significant snps becomes more challenging because there are alot of marker that are responsible for the expression of complex trait, while in color like simple qualitative trait GWAS becomes more intuitive. 
+
+
+```{r,include=TRUE}
+library(dplyr)
+#loading the data file 
+flower=read.csv("09_ames_flowering.csv")
+genos=read.csv("09_ames_genos.csv.gz")
+summary=read.csv("09_marker_summary.csv")
+
+#exploring the phenotype data
+hist(flower$flowering)
+plot(flower$flowering)
+summary(flower)
+flower_filt<- flower %>% filter(!flowering > 2000)
+hist(flower_filt$flowering)
+
+#visulaising the missing data from marker data
+hist(summary$missing_freq,breaks = 20) #keep 60% or less
+hist(summary$minor_allele_freq) #keep 0.01 or more
+
+#filter geno
+good_Sites= summary$missing_freq<=0.6 &
+  summary$minor_allele_freq>=0.01
+tokeep= summary$marker[good_Sites]
+filtered= subset(genos, genos$marker %in% tokeep)
+
+#calculate pcs
+calls=filtered[, -c(1:3)]
+mydist= dist(t(calls))
+pca= cmdscale(mydist, eig=TRUE, k=20)
+plot(pca$points[,1], pca$points[,2]) #elbow like plot
+#filtering using eigen value 
+plot(pca$eig[1:20] / sum(pca$eig))
+percents=(pca$eig[1:20] / sum(pca$eig))
+cumsum(percents)
+
+#creating mahattan plot
+library(rrBLUP)
+kinship=A.mat(t(calls))
+kinship[1:5,1:5]
+
+#both kinship and pcs together
+results= GWAS(pheno=flower, geno=filtered, K=kinship, n.PC=8)
+source("09_useful_functions.r")
+manhattan(results)
+qq(results$flowering)
+
+#both kinship
+results_kinship= GWAS(pheno=flower, geno=filtered, K=kinship)
+source("09_useful_functions.r")
+manhattan(results_kinship)
+qq(results_kinship$flowering)
+```
+

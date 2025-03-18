@@ -1,18 +1,20 @@
 ---
 title: "HW_2"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 
 
 
 1.	You have 16 barley plots that you are analyzing via linear regression based on the levels of nitrogen, phosphorus, and potassium applied to each. (=3 predictor variables, all quantitative). The actual and predicted yield values are in the file “hw2_barley.txt”; given these values, what are:
-•	The model Sum of Squares
-•	The error Sum of Squares
+•	The model Sum of Squares = 123.335
+•	The error Sum of Squares = 16.85
 
 ```{r}
 library(readr)
-barley<- read_delim("hw2_barley.txt", delim = "\t")
+barley<- read_delim("hw2_barley.txt", delim = "\t", show_col_types = FALSE)
 sums_error <- sum((barley$y_actual - barley$y_predicted)^2) 
 sums_error
 
@@ -29,16 +31,19 @@ Ans: 24(varieties) * 8(reps)= 192 independent observation
 Ans: Since the intercept has 1 df, 24 varieties gets 23 df, and 8 reps get 7 df from total 192 df so we have got 161 df left for error in the regression model.
 
 3.	Each of the following datasets violates one of the assumptions of linear regression. (The files contain data on the residuals after fitting a basic model.) For each dataset, determine which assumption is violated.
+
 •	hw2_cotton.txt – Cotton yields in a dryland (no irrigation) experiment
+Ans: the variance of block2 and other block is not equal so the homoscedasticity assumption is violated. 
 •	hw2_maize.txt – Standardized counts of pathogen spores on maize leaves
 Ans: independence of observation assumption is violated here
+
 •	hw2_marigold.txt – Average bloom counts in newly developed marigold crosses
 Ans: Homoscedasticity assumption is definitely violated as we can see a trend here so the varience is not equally distributed for the variety and also there seems to be violation of normality and independent error assumption as there is curve like residual structure in the plot. 
 
 ```{r}
 library(tidyverse)
 cotton<- read.delim("hw2_cotton.txt")
-performace
+
 plot1<- ggplot(cotton, aes(x = plot, y = yield, color = block)) +
   geom_point(size = 3, alpha = 0.7) + 
   labs(title = "cotton residual scatter plot",
@@ -56,6 +61,7 @@ plot2<- ggplot(maize, aes(x = plot, y = spores)) +
        y = "Spores") +
   theme_minimal()
 plot2
+hist(maize$spores)
 
 
 #for marigold
@@ -74,7 +80,7 @@ plot3
 
 
 4.	Load the data in “hw2_models.txt”, which has the actual phenotypic values and also the predicted values from three different models. Based solely on this data, which model is the best fit for this phenotype? Why?
-Ans: BAsed on the actual and three predicted value of y using three model we can conclude that the model2 is by far good among all as the sums of square of error for model 2 is lower than the other two model. 
+Ans: Based on the actual and three predicted value of y using three model we can conclude that the model2 is by far good among all as the sums of square of error for model 2 is lower than the other two model. 
 
 ```{r}
 models<- read.delim("hw2_models.txt")
@@ -89,7 +95,7 @@ sse_mod3 <- sum((models$actual - models$model3)^2)
 5.	Load in the data from "hw2_foxtail", which is a trial of foxtail millet varieties for birdseed, with the key phenotype being thousand-seed weight ("tsw").
 •	Does this data fit your linear regression assumptions? If so, how do you know? If not, what would you need to do to fix it? (Bonus if you actually do.)
 
-Ans: This data doesnt fit the regression assumption and we can see the residual of the model and use gvlma function to see the assumption violation. The three assumption of linear regression are  violated i.e uncorrelated residuals, normality of residuals, and the linearity of the residuals.
+Ans: This data doesn't fit the regression assumption and we can see the residual of the model and use gvlma function to see the assumption violation. The three assumption of linear regression are  violated i.e uncorrelated residuals, normality of residuals, and the linearity of the residuals.
 
 To fix this we can do log transformation on y and then we could potentially fix the violation of the assumptions.  
 
@@ -100,7 +106,6 @@ foxtail<- read.csv("hw2_foxtail.csv")
 model_millet<- lm(tsw~ rep + variety, data= foxtail)
 summary(model_millet)
 gvlma(model_millet)
-check_model(model_millet)
 ```
 
 
@@ -115,16 +120,3 @@ check_model(model_millet)
 
 
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
-```{r}
-plot(cars)
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

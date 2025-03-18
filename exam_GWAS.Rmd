@@ -1,0 +1,188 @@
+---
+title: "Exam_GWAS"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+1.  What does it mean when we say that linear regression assumes no multicollinearity? <br> 
+
+Ans: This means that the explanatory variable cannot have high correlation with each other. In statistics, the parsimonious model is often considered to be better so repeated information presented by the variable if kept then there will be alot of estimates which will cause redundency of information making our analysis corrupted.
+
+2.  Convert the following genotype table to the design matrix you would use under the Additive + Dominant model. (Remember the intercept.)<br> Genotype AT AA AA TT AT AA AT
+
+Ans:
+
+```{r}
+add_dom<- matrix(c(1,1,1,1,1,1,1,1,2,2,0,1,2,1,1,0,0,0,1,0,1),nrow = 7)
+
+```
+
+3.  Given the following markers, which one seems most likely to have the highest power for GWAS under the additive model? <br>
+
+Marker 1 Marker 2 Marker 3 <br> \# GG 146 276 70 \# CG 6 27 44 \# CC 120 8 67 \# Missing 62 23 153
+
+![MAF calculation](MAF.jpg)
+Ans: After calculating the MAF of three markers the MAF are 0.45, 0.06, 0.491 for marker1, marker2, and marker3 respectively.Here, the highest MAF is in marker 3 making it more likely to have highest power, but we also need to consider the missing data. In marker 3 we have 45% of missing data which is almost half so even though the MAF is significantly high we will not have more power as the allele replication will be low. So marker 1 which has good MAF i.e 45% i.e the thumb rule of 20 sample at least carrying minor allele to be considered acceptable is followed and it also has less missing data i.e only 18% of data is missing.I would rely on marker 1 to be more on safe side but marker 3 also has potential.<br>
+
+4.  What is the difference between basic linear regression and generalized linear regression, and what are the advantages of generalized linear regression? <br>
+
+Ans: Basic linear regression assume the response has a normal distribution while generalised linear regression assume and can be used for the data with non-normal response variable nature. generalised linear regression model is more flexible and robust. In linear regression the relation between the explanatory and response variable is assumed to be linear but in GLM it can be non-linear. Its advantage is that we can use the GLM for binary distribution data like disease presence or absence study or poission distribution following data and also it is more flexible in terms of assuming the residual variance distribution since it doesn't assume that the variance is constant across all independent variable. <br>
+
+5.What causes population structure? Give an example.
+
+Ans: Population structure is the sub-grouping or clustering of genotype group based on their background or genetic variation within same species. It is caused by the different genetic background of the genotype, it can be the geographical location, of different genotype that has different genetic background or history i.e if we mix fingermillet from Nepal and the finger millet from Africa we can see different sub-group of fingermillet which is caused by the background of millet grown affected by the genetics of landraces in different place, teh climate, different enviornmental factors and also natural selection, genetic drift can cause the population structure within a species.
+
+6.  Take these matrices and multiply them (A \* B \* C).
+
+```{r}
+A<- matrix(c(2,-1,4,-3,0,2),nrow = 3)
+B<- matrix(c(7,1,-2,2,1,0,0,-4),nrow = 2)
+C<- matrix(c(6,-2,0,1),nrow = 4)
+#multiplication
+result_matrix<- A %*% B %*% C
+```
+
+
+7.  Load the data frame in “exam_strawberry.csv,” which is looking at how nitrogen levels and variety affect strawberry flavor. Treating nitrogen as a quantitative variable (that is, not as a factor), calculate: • (XTX)-1
+
+```{r}
+strawberry<- read.csv("exam_strawberry.csv")
+strawberry_model<- lm(flavor ~ nitrogen+ variety, data=strawberry )
+summary(strawberry_model)
+#(XTX)-1
+X<- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,3,3,3,4,4,4,1,0,0,0,0,1,0,0,1,1,0,0,0,1,0,1,0,0,1,0,0,0,1,0),nrow = 12)
+Y<- matrix(c(strawberry$flavor))
+XtransX<- t(X)%*% X
+XtransXinv<- solve(XtransX)
+
+#beta
+#computing beta i.e coefficient from the equation first we will calculate X^trans * Y
+XtransY<- t(X)%*%Y
+beta<- XtransXinv %*% XtransY
+beta
+#residuals e
+#calculating error
+e<- Y- X%*%beta
+e
+```
+
+8.	The file “exam_models.csv” contains actual phenotype values and the predicted values from 4 different models. Which of these models has the best fit to the data? How do you know?
+
+
+Ans: Model 3 is the best model in overall as the sums of sqaure of error is lowest among all for this model. 
+
+
+```{r}
+models<- read.csv("exam_models.csv")
+sse_mod1 <- sum((models$actual - models$model1)^2)
+sse_mod1
+sse_mod2 <- sum((models$actual - models$model2)^2)
+sse_mod2
+sse_mod3 <- sum((models$actual - models$model3)^2)
+sse_mod3
+sse_mod4 <- sum((models$actual - models$model4)^2) 
+sse_mod4
+
+```
+9.	You are running a GWAS for quantitative disease resistance in rice seedlings. You have a diversity panel of 580 inbred rice lines and microarray data on each of them at 120,000 sites. You filter the sites to remove any that have strong linkage between them, leaving you with 24,500 essentially independent sites. After running a GWAS, the most significant marker has a p-value of 6.82 * 10-34. What would its p-value be after performing a Bonferroni correction?<br>
+
+Ans: The p-value after bonferroni correction will be 1.6709e-29. Basically the p-value we get here is by multiplying the p-value (6.82e-34 * no.of test(24,500)).
+
+10.	You decide that a Bonferroni correction for the above question is too stringent and so do a false discovery rate correction instead. At FDR < 0.05, you get 124 SNPs significantly associated with your phenotypes. Assuming everything worked properly, how many of these are probably real?<br>
+
+Ans: The real significant snps will be around 117. As the FDR correction gives us 6 false hit i.e fdr < 0.05 means 5% of 124 are our false hit.
+
+11.	The file “exam_violets.csv” contains data for mapping purple color in violets (=sample name, phenotype, first 2 PCs, and genotype data at one specific marker). Using an additive model and both PCs as covariates, run this data as a basic linear regression. What is the p-value for this marker? <br>
+
+Ans:The p-value of this marker is  8.775e-05. 
+
+```{r}
+
+violets<- read.csv("exam_violets.csv")
+violets$additive <- ifelse(violets$marker == "CC", 2, 
+                    ifelse(violets$marker == "CT", 1, 
+                    ifelse(violets$marker == "TT", 0, NA)))
+
+violet_model<- lm(purple ~ additive + pc1 + pc2, data=violets)
+summary(violet_model)
+
+```
+
+
+
+12.	Given the marker data in “exam_barley.csv”, calculate the genetic principal coordinates.
+a.	Plot the first two PCs.
+
+b.	Plot the scree plot. How many PCs should you include in your GWAS as covariates?
+
+Ans: I will include first 5 PCs as a covariates in the GWAS study. 
+c.	How many would you need to include to capture 50% of the total genetic variation?
+
+Ans: First 15 PCs need to be included to capture 50% of total genetic variation. 
+i.	Tip: The cumsum() function may be useful for this.
+
+```{r}
+barley<- read.csv("exam_barley.csv", row.names = 1)
+mydist= dist(barley)
+pca= cmdscale(mydist, eig=TRUE, k=20)
+plot(pca$points[,1], pca$points[,2]) #there are clusters of genotypes 
+#getting the eigen value
+#plotting the screeplot
+plot(pca$eig)
+#normalising the eigen
+eignorm<- pca$eig/sum(pca$eig)
+plot(eignorm[1:20])
+percents=(pca$eig[1:20] / sum(pca$eig))
+cumsum(percents)
+
+```
+
+
+13.	Using rrBLUP and the genotype and phenotype data provided, run a GWAS. “exam_gwas_phenos.csv” contains phenotypes, “exam_gwas_genos_pca.csv” contains the genotypes formatted for calculating PCs, and “exam_gwas_genos_rrblup.csv” contains the same genotypes formatted for rrBLUP. (I didn’t want to make you waste time doing reformatting.)
+
+a.	Plot the raw field data (in order and as a histogram).
+
+b.	Plot the first two genetic principal coordinates and the scree plot of them. How many PCs do you think should be included in the model and why?<br>
+
+Ans: First three PCs should be included as they looks like they explain the most of variation and after the third one there is no significant breaking point.
+
+c.	Plot the Manhatten and QQ-plots resulting from running it through a basic GWAS with the first 3 PCs as covariates. (Note: this may not be the same as the number you chose in part B, and that’s okay; I’m specifying the number here so it’s easier to check your results)
+
+i.	Note: if you have issues getting rrBLUP to do the plots right, you can tell it to skip plotting (plot=F) and manually plot them using the manhattan() and qq() functions in “exam_useful_functions.r”. manhattan() takes the full results of an rrBLUP GWAS call, and qq() takes a vector of -log10 p-values. (So, just the results column from the rrBLUP output)
+
+
+```{r}
+source("09_useful_functions.r")
+exam_phenos<- read.csv("exam_gwas_phenos.csv")
+exam_genos<- read.csv("exam_gwas_genos_pca.csv")
+rrblup_genos<- read.csv("exam_gwas_genos_rrblup.csv")
+
+#plotting raw field data
+hist(exam_phenos$panicle)
+
+#plotting the first two pcs and scree plot 
+mydist= dist(exam_genos)
+pca= cmdscale(mydist, eig=TRUE, k=20)
+plot(pca$points[,1], pca$points[,2]) #three distinct clusters of genotypes
+#filtering using eigen value 
+plot(pca$eig[1:20] / sum(pca$eig))
+percents=(pca$eig[1:20] / sum(pca$eig))
+cumsum(percents)
+
+#plotting manhattan and qq-plots
+library(rrBLUP)
+kinship=A.mat(exam_genos)
+kinship[1:5,1:5]
+#only pcs as a covariates
+results1= GWAS(pheno=exam_phenos, geno=rrblup_genos, n.PC=3)
+manhattan(results1)
+qq(results1$panicle)
+#both kinship and pcs together
+results= GWAS(pheno=exam_phenos, geno=rrblup_genos, K=kinship, n.PC=3)
+manhattan(results)
+qq(results$panicle)
+
+```
+
+

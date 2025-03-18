@@ -1,0 +1,71 @@
+---
+title: "L11"
+output: html_notebook
+---
+
+```{r}
+data<- read.csv("10_pvals.csv")
+plot(-log(data))
+sum(if plot$pval >= 0.05 = TRUE
+    else FALSE)
+# Read CSV file
+data <- read.csv("10_pvals.csv")
+
+# Ensure the column name is correct (assuming it's named "pval")
+if (!"pval" %in% colnames(data)) {
+  stop("Column 'pval' not found in the dataset. Check the column names.")
+}
+
+# Convert to logical values: TRUE if pval > 0.05, FALSE otherwise
+pval_logical <- data$pval < 0.05
+
+# Count the number of TRUE values
+num_true <- sum(pval_logical)
+
+# Plot -log(pval) if applicable
+plot(-log(data$pval), main = "Plot of -log(pval)", ylab = "-log(pval)", xlab = "Index")
+
+# Print the result
+print(num_true)
+
+bonf.djusted = p.adjust(data$pval, method= "bonferroni")
+sum(bonf<= 0.05)
+fdr= p.adjust(data$pval, method="fdr")
+sum(fdr<= 0.05)
+
+```
+
+
+```{r}
+
+qqnorm(data$pval)
+null = 1:nrow(pval)/nrow(pval)
+
+plot(x= sort(-log10(null)), y=)
+-log(data$pval)
+```
+
+```{r}
+maize= read.csv("10_maize.csv")
+#normal linear regression 
+mymodel= lm(color ~m1,data = maize)
+summary(mymodel)
+
+#generalized linear regression
+model1= glm(color ~ m1, data = maize, family = "binomial")
+summary(model1)
+```
+
+
+```{r}
+#generalized linear regression
+model2= glm(color ~ m2, data = maize, family = "binomial")
+summary(model2)
+#generalized linear regression
+model3= glm(color ~ m3, data = maize, family = "binomial")
+summary(model3)
+#generalized linear regression
+model4= glm(color ~ m4, data = maize, family = "binomial")
+summary(model4)
+```
+

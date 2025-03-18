@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: html_notebook
+
+---
+
+```{r}
+source("http://zzlab.net/GAPIT/gapit_functions.txt")
+```
+
+```{r}
+color=read.csv("09_ames_color.csv")
+genos=read.csv("09_ames_genos.csv.gz")
+summary=read.csv("09_marker_summary.csv")
+
+
+color
+genos
+summary
+```
+
+
+```{r}
+hist(summary$missing_freq,breaks = 20) #keep 60% or less
+hist(summary$minor_allele_freq) #keep 0.01 or more
+
+#filter geno
+good_Sites= summary$missing_freq<=0.6 &
+  summary$minor_allele_freq>=0.01
+sum(good_Sites)
+
+
+tokeep= summary$marker[good_Sites]
+filtered= subset(genos, genos$marker %in% tokeep)
+
+
+#filter phenotypes
+
+hist(color$color)
+
+
+          
+```
+
+
+```{r}
+
+#calculate pcs
+head(filtered)
+calls=filtered[, -c(1:3)]
+head(calls)
+head(filtered)
+mydist= dist(t(calls))
+mydist
+pca= cmdscale(mydist, eig=TRUE, k=20)
+plot(pca$points[,1], pca$points[,2])
+plot(pca$eig[1:20],col="blue")
+plot(pca$eig[1:20] / sum(pca$eig))
+percents=(pca$eig[1:20] / sum(pca$eig))
+cumsum(percents)
+```
+
+
+```{r}
+library(rrBLUP)
+kinship=A.mat(t(calls))
+kinship
+kinship[1:5,1:5]
+
+results= GWAS(pheno=color, geno=filtered, K=kinship, n.PC=15)
+source("09_useful_functions.r")
+manhattan(results)
+qq(results$color)
+```
+

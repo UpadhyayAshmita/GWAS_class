@@ -144,3 +144,13 @@ sum(e^2) #8.5179
 ```
 
 
+
+9.	You are running a GWAS for quantitative disease resistance in rice seedlings. You have a diversity panel of 580 inbred rice lines and microarray data on each of them at 120,000 sites. You filter the sites to remove any that have strong linkage between them, leaving you with 24,500 essentially independent sites. After running a GWAS, the most significant marker has a p-value of 6.82 * 10-34. What would its p-value be after performing a Bonferroni correction?<br>
+
+Ans: The p-value after bonferroni correction will be 1.6709e-29. Basically the p-value we get here is by multiplying the p-value (6.82e-34 * no.of test(24,500)).
+
+10.	You decide that a Bonferroni correction for the above question is too stringent and so do a false discovery rate correction instead. At FDR < 0.05, you get 124 SNPs significantly associated with your phenotypes. Assuming everything worked properly, how many of these are probably real?<br>
+
+Ans: The real significant snps will be around 117. As the FDR correction gives us 6 false hit i.e fdr < 0.05 means 5% of 124 are our false hit.
+
+
